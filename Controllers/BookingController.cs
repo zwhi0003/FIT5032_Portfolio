@@ -3,21 +3,28 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using FIT5032_Portfolio.Models;
 
 namespace FIT5032_Portfolio.Controllers
 {
     public class BookingController : Controller
     {
+        private BookingModels db = new BookingModels();
         // GET: Booking
         public ActionResult Index()
         {
-            return View();
+            return View(db.Bookings.ToList());
         }
 
         // GET: Booking/Details/5
         public ActionResult Details(int id)
         {
-            return View();
+            Booking booking = db.Bookings.Find(id);
+            if (booking == null)
+            {
+                return HttpNotFound();
+            }
+            return View(booking);
         }
 
         // GET: Booking/Create
@@ -28,12 +35,12 @@ namespace FIT5032_Portfolio.Controllers
 
         // POST: Booking/Create
         [HttpPost]
-        public ActionResult Create(FormCollection collection)
+        public ActionResult Create(Booking booking)
         {
             try
             {
-                // TODO: Add insert logic here
-
+                db.Bookings.Add(booking);
+                db.SaveChanges();
                 return RedirectToAction("Index");
             }
             catch
@@ -45,17 +52,22 @@ namespace FIT5032_Portfolio.Controllers
         // GET: Booking/Edit/5
         public ActionResult Edit(int id)
         {
-            return View();
+            Booking booking = db.Bookings.Find(id);
+            if (booking == null)
+            {
+                return HttpNotFound();
+            }
+            return View(booking);
         }
 
         // POST: Booking/Edit/5
         [HttpPost]
-        public ActionResult Edit(int id, FormCollection collection)
+        public ActionResult Edit(Booking booking)
         {
             try
             {
-                // TODO: Add update logic here
-
+                db.Entry(booking).State = System.Data.Entity.EntityState.Modified;
+                db.SaveChanges();
                 return RedirectToAction("Index");
             }
             catch
@@ -67,17 +79,24 @@ namespace FIT5032_Portfolio.Controllers
         // GET: Booking/Delete/5
         public ActionResult Delete(int id)
         {
-            return View();
+            Booking booking = db.Bookings.Find(id);
+            if (booking == null)
+            {
+                return HttpNotFound();
+            }
+            return View(booking);
         }
 
         // POST: Booking/Delete/5
         [HttpPost]
-        public ActionResult Delete(int id, FormCollection collection)
+        [ActionName("Delete")]
+        public ActionResult DeleteConfirmed(int id)
         {
             try
             {
-                // TODO: Add delete logic here
-
+                Booking booking = db.Bookings.Find(id);
+                db.Bookings.Remove(booking);
+                db.SaveChanges();
                 return RedirectToAction("Index");
             }
             catch
